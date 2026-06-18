@@ -1044,4 +1044,11 @@ p {
     width: 52px;
     height: 52px;
   }
+
+  .brand-logo-img {
+  width: 40px;       /* Ajuste a largura ideal para o seu cabeçalho */
+  height: 40px;      /* Ajuste a altura ideal */
+  object-fit: contain; /* Garante que a imagem não fique distorcida */
+  border-radius: 50%; /* Mantém o formato circular caso sua logo precise */
+  }
 }

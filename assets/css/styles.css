@@ -972,10 +972,10 @@ p {
   }
 
   .brand-logo-img {
-  width: 25px;      
-  height: 25px;      
-  object-fit: contain; 
-  border-radius: 50%; 
+  width: 25px !important;      
+  height: 25px !important;      
+  object-fit: contain !important; 
+  border-radius: 50% !important; 
   }
 
   .brand-name {

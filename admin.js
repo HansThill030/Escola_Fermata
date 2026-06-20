@@ -31,6 +31,7 @@
   function writeData(data) {
     try {
       localStorage.setItem(storageKey, JSON.stringify(data));
+      window.FermataApplyAdminData?.();
     } catch (e) {
       console.warn("Erro ao salvar dados:", e);
     }

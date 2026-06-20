@@ -118,6 +118,11 @@
   window.FermataGetAdminData = function () {
     return mergeData(readSavedData());
   };
+  window.FermataApplyAdminData = applyAdminData;
+
+  window.addEventListener("storage", (event) => {
+    if (event.key === STORAGE_KEY) applyAdminData();
+  });
 
   applyAdminData();
 })();

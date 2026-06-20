@@ -295,4 +295,4 @@
 
   // Restaura sessão se existir
   setLoggedIn(sessionStorage.getItem(SESSION_KEY) === "true");
-})();
+})(); 

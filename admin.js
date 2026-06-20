@@ -19,13 +19,21 @@
   const toast = document.querySelector("[data-toast]");
   let lockTimer;
 
+  // --- Garantir estado inicial visível via display (não via hidden) ---
+  if (loginScreen) loginScreen.style.display = "grid";
+  if (panel) panel.style.display = "none";
+
   function readData() {
     if (window.FermataGetAdminData) return window.FermataGetAdminData();
-    return defaults;
+    return defaults || { links: {}, products: [], prices: {} };
   }
 
   function writeData(data) {
-    localStorage.setItem(storageKey, JSON.stringify(data));
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    } catch (e) {
+      console.warn("Erro ao salvar dados:", e);
+    }
   }
 
   function showToast(message) {
@@ -35,10 +43,13 @@
     window.setTimeout(() => toast.classList.remove("is-visible"), 2200);
   }
 
+  // --- Usa style.display em vez de .hidden para evitar conflito com CSS ---
   function setLoggedIn(isLoggedIn) {
     document.body.classList.toggle("is-admin-authenticated", isLoggedIn);
-    loginScreen.hidden = isLoggedIn;
-    panel.hidden = !isLoggedIn;
+
+    if (loginScreen) loginScreen.style.display = isLoggedIn ? "none" : "grid";
+    if (panel) panel.style.display = isLoggedIn ? "block" : "none";
+
     if (isLoggedIn) {
       sessionStorage.setItem(SESSION_KEY, "true");
       renderPanel();
@@ -62,7 +73,9 @@
     }
 
     if (lockMessage) {
-      lockMessage.textContent = isLocked ? `Acesso bloqueado. Tente novamente em ${remaining}s.` : "";
+      lockMessage.textContent = isLocked
+        ? `Acesso bloqueado. Tente novamente em ${remaining}s.`
+        : "";
     }
 
     if (!isLocked && lockTimer) {
@@ -86,30 +99,36 @@
 
     if (attempts >= 3) {
       localStorage.setItem(LOCK_KEY, String(Date.now() + 60000));
-      error.textContent = "";
+      if (error) error.textContent = "";
       startLockTimer();
       return;
     }
 
-    error.textContent = `Credenciais invalidas. Tentativa ${attempts} de 3.`;
+    if (error) {
+      error.textContent = `Credenciais inválidas. Tentativa ${attempts} de 3.`;
+    }
   }
 
   function inputCell(value, type, attrs) {
-    return `<input type="${type || "text"}" value="${String(value).replace(/"/g, "&quot;")}" ${attrs || ""}>`;
+    const safe = String(value || "").replace(/"/g, "&quot;");
+    return `<input type="${type || "text"}" value="${safe}" ${attrs || ""}>`;
   }
 
   function renderProducts(data) {
     const rows = document.querySelector("[data-products-rows]");
-    if (!rows) return;
-    rows.innerHTML = data.products.map((product) => `
+    if (!rows || !Array.isArray(data.products)) return;
+    rows.innerHTML = data.products
+      .map(
+        (product) => `
       <tr data-product-row="${product.id}">
         <td><strong>${product.name}</strong></td>
-        <td><textarea data-field="description">${product.description}</textarea></td>
+        <td><textarea data-field="description">${product.description || ""}</textarea></td>
         <td>${inputCell(product.link, "url", 'data-field="link"')}</td>
         <td>${inputCell(product.price, "text", 'data-field="price"')}</td>
         <td><button class="btn btn-primary admin-save-row" type="button">Salvar</button></td>
-      </tr>
-    `).join("");
+      </tr>`
+      )
+      .join("");
   }
 
   function renderLinks(data) {
@@ -118,41 +137,57 @@
       whatsapp: "WhatsApp (CTA principal)",
       hotmart: "Hotmart (Curso Toque de Casa)",
       community: "Comunidade (Mercado Pago)",
-      postPurchaseGroup: "Link pos-compra - Grupo WhatsApp",
+      postPurchaseGroup: "Link pós-compra – Grupo WhatsApp",
       instagram: "Instagram",
       youtube: "YouTube",
-      email: "E-mail"
+      email: "E-mail",
     };
-
     if (!rows) return;
-    rows.innerHTML = Object.entries(labels).map(([key, label]) => `
+    rows.innerHTML = Object.entries(labels)
+      .map(
+        ([key, label]) => `
       <tr data-link-row="${key}">
         <td><strong>${label}</strong></td>
-        <td>${inputCell(data.links[key] || "", key === "email" ? "email" : "url", 'data-field="value"')}</td>
+        <td>${inputCell(
+          (data.links || {})[key] || "",
+          key === "email" ? "email" : "url",
+          'data-field="value"'
+        )}</td>
         <td><button class="btn btn-primary admin-save-row" type="button">Salvar</button></td>
-      </tr>
-    `).join("");
+      </tr>`
+      )
+      .join("");
   }
 
   function renderPrices(data) {
     const rows = document.querySelector("[data-prices-rows]");
     const items = [
-      ["Curso \"Toque de Casa\"", "courseOriginal", "courseCurrent"],
+      ['Curso "Toque de Casa"', "courseOriginal", "courseCurrent"],
       ["Comunidade Fermata", "communityOriginal", "communityCurrent"],
-      ["Apostila 1 - Teoria", "apostila1Original", "apostila1Current"],
-      ["Apostila 2 - Leitura", "apostila2Original", "apostila2Current"],
-      ["Livro de Repertorio", "repertorioOriginal", "repertorioCurrent"]
+      ["Apostila 1 – Teoria", "apostila1Original", "apostila1Current"],
+      ["Apostila 2 – Leitura", "apostila2Original", "apostila2Current"],
+      ["Livro de Repertório", "repertorioOriginal", "repertorioCurrent"],
     ];
-
     if (!rows) return;
-    rows.innerHTML = items.map(([label, originalKey, currentKey]) => `
+    rows.innerHTML = items
+      .map(
+        ([label, originalKey, currentKey]) => `
       <tr data-price-row>
         <td><strong>${label}</strong></td>
-        <td>${inputCell(data.prices[originalKey], "text", `data-price-key="${originalKey}"`)}</td>
-        <td>${inputCell(data.prices[currentKey], "text", `data-price-key="${currentKey}"`)}</td>
+        <td>${inputCell(
+          (data.prices || {})[originalKey] || "",
+          "text",
+          `data-price-key="${originalKey}"`
+        )}</td>
+        <td>${inputCell(
+          (data.prices || {})[currentKey] || "",
+          "text",
+          `data-price-key="${currentKey}"`
+        )}</td>
         <td><button class="btn btn-primary admin-save-row" type="button">Salvar</button></td>
-      </tr>
-    `).join("");
+      </tr>`
+      )
+      .join("");
   }
 
   function renderPanel() {
@@ -162,12 +197,16 @@
     renderPrices(data);
   }
 
+  // --- Tabs e botões de salvar ---
   document.addEventListener("click", (event) => {
     const tab = event.target.closest("[data-admin-tab]");
     if (tab) {
-      document.querySelectorAll("[data-admin-tab]").forEach((item) => item.classList.toggle("is-active", item === tab));
+      document.querySelectorAll("[data-admin-tab]").forEach((item) =>
+        item.classList.toggle("is-active", item === tab)
+      );
       document.querySelectorAll("[data-admin-section]").forEach((section) => {
-        section.hidden = section.dataset.adminSection !== tab.dataset.adminTab;
+        section.style.display =
+          section.dataset.adminSection === tab.dataset.adminTab ? "block" : "none";
       });
     }
 
@@ -179,24 +218,32 @@
       const priceRow = rowButton.closest("[data-price-row]");
 
       if (productRow) {
-        const product = data.products.find((item) => item.id === productRow.dataset.productRow);
-        product.description = productRow.querySelector('[data-field="description"]').value;
-        product.link = productRow.querySelector('[data-field="link"]').value;
-        product.price = productRow.querySelector('[data-field="price"]').value;
+        const product = (data.products || []).find(
+          (item) => item.id === productRow.dataset.productRow
+        );
+        if (product) {
+          product.description =
+            productRow.querySelector('[data-field="description"]')?.value || "";
+          product.link = productRow.querySelector('[data-field="link"]')?.value || "";
+          product.price = productRow.querySelector('[data-field="price"]')?.value || "";
+        }
       }
 
       if (linkRow) {
-        data.links[linkRow.dataset.linkRow] = linkRow.querySelector('[data-field="value"]').value;
+        if (!data.links) data.links = {};
+        data.links[linkRow.dataset.linkRow] =
+          linkRow.querySelector('[data-field="value"]')?.value || "";
       }
 
       if (priceRow) {
+        if (!data.prices) data.prices = {};
         priceRow.querySelectorAll("[data-price-key]").forEach((input) => {
           data.prices[input.dataset.priceKey] = input.value;
         });
       }
 
       writeData(data);
-      showToast("Salvo com sucesso!");
+      showToast("✓ Salvo com sucesso!");
     }
   });
 
@@ -208,15 +255,19 @@
 
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
+
     if (getLockUntil() > Date.now()) {
       startLockTimer();
       return;
     }
 
-    if (userInput.value === USER && passInput.value === PASS) {
+    const enteredUser = userInput?.value?.trim() || "";
+    const enteredPass = passInput?.value || "";
+
+    if (enteredUser === USER && enteredPass === PASS) {
       localStorage.removeItem(ATTEMPTS_KEY);
       localStorage.removeItem(LOCK_KEY);
-      error.textContent = "";
+      if (error) error.textContent = "";
       setLoggedIn(true);
       return;
     }
@@ -226,6 +277,22 @@
 
   logout?.addEventListener("click", () => setLoggedIn(false));
 
-  if (getLockUntil() > Date.now()) startLockTimer();
+  // --- Inicialização ---
+  // Reseta lock expirado ao carregar
+  if (getLockUntil() > 0 && getLockUntil() <= Date.now()) {
+    localStorage.removeItem(LOCK_KEY);
+    localStorage.removeItem(ATTEMPTS_KEY);
+  }
+
+  if (getLockUntil() > Date.now()) {
+    startLockTimer();
+  }
+
+  // Inicializa seções das abas via display
+  document.querySelectorAll("[data-admin-section]").forEach((section, i) => {
+    section.style.display = i === 0 ? "block" : "none";
+  });
+
+  // Restaura sessão se existir
   setLoggedIn(sessionStorage.getItem(SESSION_KEY) === "true");
 })();

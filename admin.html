@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Painel | Escola Fermata</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body class="admin-body">
+    <main class="admin-login-screen" data-admin-login>
+      <form class="admin-login-card" data-login-form>
+        <div class="admin-logo">
+          <img src="assets/images/logo.png" alt="Escola Fermata">
+          <strong>Fermata</strong>
+        </div>
+        <label for="admin-user">Usuario</label>
+        <input id="admin-user" name="user" type="text" autocomplete="username" required>
+        <label for="admin-pass">Senha</label>
+        <div class="password-field">
+          <input id="admin-pass" name="password" type="password" autocomplete="current-password" required>
+          <button type="button" data-toggle-pass>Mostrar</button>
+        </div>
+        <button class="btn btn-primary" type="submit">Entrar</button>
+        <p class="admin-error" data-login-error aria-live="polite"></p>
+        <p class="admin-lock" data-lock-message aria-live="polite"></p>
+      </form>
+    </main>
+
+    <main class="admin-panel" data-admin-panel hidden>
+      <header class="admin-panel-header">
+        <div class="admin-panel-brand">
+          <img src="assets/images/logo.png" alt="Escola Fermata">
+          <div>
+            <strong>Painel Administrativo</strong>
+            <span>Escola Fermata</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" type="button" data-logout>Sair</button>
+      </header>
+
+      <section class="admin-shell">
+        <nav class="admin-tabs" aria-label="Abas do painel">
+          <button class="is-active" type="button" data-admin-tab="products">Produtos</button>
+          <button type="button" data-admin-tab="links">Links Gerais</button>
+          <button type="button" data-admin-tab="prices">Precos</button>
+        </nav>
+
+        <section class="admin-section" data-admin-section="products">
+          <div class="admin-section-heading">
+            <h1>Materiais Didaticos</h1>
+            <p>Edite descricao, link de compra e preco exibido na pagina de materiais.</p>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>Produto</th><th>Descricao curta</th><th>Link de compra</th><th>Preco atual</th><th></th></tr></thead>
+              <tbody data-products-rows></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-section" data-admin-section="links" hidden>
+          <div class="admin-section-heading">
+            <h1>Links Gerais</h1>
+            <p>Atualize os principais destinos usados nos botoes e rodapes do site.</p>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>Label</th><th>Link atual</th><th></th></tr></thead>
+              <tbody data-links-rows></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-section" data-admin-section="prices" hidden>
+          <div class="admin-section-heading">
+            <h1>Precos</h1>
+            <p>Controle precos originais e atuais dos produtos principais.</p>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>Produto</th><th>Preco original</th><th>Preco atual</th><th></th></tr></thead>
+              <tbody data-prices-rows></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="admin-toast" data-toast role="status" aria-live="polite"></div>
+    <script src="admin-data.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

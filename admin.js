@@ -1,11 +1,23 @@
-(function () {
+﻿(function () {
   const USER = "fermata";
   const PASS = "tiago2025";
   const LOCK_KEY = "fermata_admin_lock_until";
   const ATTEMPTS_KEY = "fermata_admin_attempts";
   const SESSION_KEY = "fermata_admin_session";
   const storageKey = window.FermataAdminStorageKey || "fermata_admin_data";
+  const photosStorageKey = window.FermataPhotosStorageKey || "fermata_admin_photos";
   const defaults = window.FermataAdminDefaults;
+  const photoItems = [
+    ["Início", "home-hero", "Foto principal do hero", "https://images.unsplash.com/photo-1525201548942-d8732f6617a0?auto=format&fit=crop&w=1200&q=82"],
+    ["Aulas", "aulas-hero", "Foto do hero da página de aulas", "https://images.unsplash.com/photo-1499415479124-43c32433a620?auto=format&fit=crop&w=1000&q=82"],
+    ["Aulas", "aulas-professor", "Foto do Prof. Tiago", "https://images.unsplash.com/photo-1511551203524-9a24350a5771?auto=format&fit=crop&w=900&q=82"],
+    ["Curso", "curso-hero", "Foto do hero do curso", "https://images.unsplash.com/photo-1485278537138-4e8911a13c02?auto=format&fit=crop&w=1000&q=82"],
+    ["Materiais", "materiais-hero", "Foto do hero de materiais", "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1000&q=82"],
+    ["Contato", "contato-hero", "Foto do hero de contato", "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1000&q=82"],
+    ["Carrossel", "sarau-1", "Foto 1 do carrossel (Sarau)", "https://images.unsplash.com/photo-1514119412350-e174d90d280e?auto=format&fit=crop&w=1000&q=82"],
+    ["Carrossel", "sarau-2", "Foto 2 do carrossel (Sarau)", "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1000&q=82"],
+    ["Carrossel", "sarau-3", "Foto 3 do carrossel (Sarau)", "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1000&q=82"],
+  ];
 
   const loginScreen = document.querySelector("[data-admin-login]");
   const panel = document.querySelector("[data-admin-panel]");
@@ -34,6 +46,25 @@
       window.FermataApplyAdminData?.();
     } catch (e) {
       console.warn("Erro ao salvar dados:", e);
+    }
+  }
+
+  function readPhotos() {
+    if (window.FermataGetAdminPhotos) return window.FermataGetAdminPhotos();
+    try {
+      return JSON.parse(localStorage.getItem(photosStorageKey) || "{}");
+    } catch (e) {
+      console.warn("Erro ao ler fotos:", e);
+      return {};
+    }
+  }
+
+  function writePhotos(photos) {
+    try {
+      localStorage.setItem(photosStorageKey, JSON.stringify(photos));
+      window.FermataApplyAdminPhotos?.();
+    } catch (e) {
+      console.warn("Erro ao salvar fotos:", e);
     }
   }
 
@@ -165,6 +196,8 @@
     const items = [
       ['Curso "Toque de Casa"', "courseOriginal", "courseCurrent"],
       ["Comunidade Fermata", "communityOriginal", "communityCurrent"],
+      ["Aula Presencial", "presencialOriginal", "presencialCurrent"],
+      ["Aula Online", "onlineOriginal", "onlineCurrent"],
       ["Apostila 1 – Teoria", "apostila1Original", "apostila1Current"],
       ["Apostila 2 – Leitura", "apostila2Original", "apostila2Current"],
       ["Livro de Repertório", "repertorioOriginal", "repertorioCurrent"],
@@ -191,11 +224,32 @@
       .join("");
   }
 
+  function renderPhotos() {
+    const rows = document.querySelector("[data-photos-rows]");
+    if (!rows) return;
+    const photos = readPhotos();
+    rows.innerHTML = photoItems
+      .map(([page, id, description, fallback]) => {
+        const url = photos[id] || fallback;
+        return `
+      <tr data-photo-row="${id}">
+        <td><strong>${page}</strong></td>
+        <td><code>${id}</code></td>
+        <td>${description}</td>
+        <td>${inputCell(url, "url", 'data-field="photo-url"')}</td>
+        <td><img class="admin-photo-preview" src="${String(url).replace(/"/g, "&quot;")}" alt="Preview de ${id}"></td>
+        <td><button class="btn btn-primary admin-save-row" type="button">Salvar</button></td>
+      </tr>`;
+      })
+      .join("");
+  }
+
   function renderPanel() {
     const data = readData();
     renderProducts(data);
     renderLinks(data);
     renderPrices(data);
+    renderPhotos();
   }
 
   // --- Tabs e botões de salvar ---
@@ -217,6 +271,7 @@
       const productRow = rowButton.closest("[data-product-row]");
       const linkRow = rowButton.closest("[data-link-row]");
       const priceRow = rowButton.closest("[data-price-row]");
+      const photoRow = rowButton.closest("[data-photo-row]");
 
       if (productRow) {
         const product = (data.products || []).find(
@@ -241,6 +296,14 @@
         priceRow.querySelectorAll("[data-price-key]").forEach((input) => {
           data.prices[input.dataset.priceKey] = input.value;
         });
+      }
+
+      if (photoRow) {
+        const photos = readPhotos();
+        photos[photoRow.dataset.photoRow] =
+          photoRow.querySelector('[data-field="photo-url"]')?.value || "";
+        writePhotos(photos);
+        renderPhotos();
       }
 
       writeData(data);

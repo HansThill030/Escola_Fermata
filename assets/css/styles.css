@@ -634,6 +634,55 @@ p {
   margin-bottom: 0;
 }
 
+.modality-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.modality-card {
+  display: grid;
+  align-content: start;
+  min-height: 100%;
+  padding: 28px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  box-shadow: var(--shadow-card);
+}
+
+.modality-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: rgba(245, 166, 35, 0.18);
+  font-size: 1.45rem;
+}
+
+.modality-card .price {
+  margin-top: auto;
+}
+
+.price-note {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.location-panel {
+  margin-top: 42px;
+}
+
+.map-embed {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin-top: 24px;
+}
+
 .teacher-card {
   display: grid;
   grid-template-columns: 320px 1fr;
@@ -990,6 +1039,44 @@ p {
   gap: 12px;
 }
 
+.success-form {
+  display: grid;
+  gap: 16px;
+  width: min(100%, 620px);
+  margin: 0 auto;
+  padding: 28px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  box-shadow: var(--shadow-card);
+}
+
+.success-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--color-black);
+  font-weight: 800;
+}
+
+.success-form input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.success-access {
+  display: none;
+  margin-top: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-line);
+}
+
+.success-form.is-confirmed .success-access {
+  display: block;
+}
+
 .admin-body {
   min-height: 100vh;
   background:
@@ -1197,6 +1284,13 @@ p {
   resize: vertical;
 }
 
+.admin-photo-preview {
+  width: 120px;
+  height: 80px;
+  border-radius: var(--radius);
+  object-fit: cover;
+}
+
 .admin-toast {
   position: fixed;
   right: 22px;
@@ -1288,6 +1382,7 @@ p {
   .service-grid,
   .testimonial-grid,
   .product-grid,
+  .modality-grid,
   .media-grid,
   .instagram-grid,
   .next-steps-grid,
@@ -1372,6 +1467,7 @@ p {
   .service-grid,
   .testimonial-grid,
   .product-grid,
+  .modality-grid,
   .module-grid,
   .media-grid,
   .instagram-grid,

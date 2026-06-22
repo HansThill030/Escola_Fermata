@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const STORAGE_KEY = "fermata_admin_data";
 
   const defaults = {
@@ -39,6 +39,10 @@
       courseCurrent: "R$197,00",
       communityOriginal: "R$97,00",
       communityCurrent: "R$47,00/mês",
+      presencialOriginal: "R$400,00",
+      presencialCurrent: "R$340,00",
+      onlineOriginal: "R$340,00",
+      onlineCurrent: "R$280,00",
       apostila1Original: "-",
       apostila1Current: "R$49,90",
       apostila2Original: "-",
@@ -52,7 +56,7 @@
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     } catch (error) {
-      console.warn("Nao foi possivel ler as configuracoes do admin.", error);
+      console.warn("Não foi possível ler as configurações do admin.", error);
       return {};
     }
   }

@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8">
@@ -17,7 +17,7 @@
           <img src="assets/images/logo.png" alt="Escola Fermata">
           <strong>Fermata</strong>
         </div>
-        <label for="admin-user">Usuario</label>
+        <label for="admin-user">Usuário</label>
         <input id="admin-user" name="user" type="text" autocomplete="username" required>
         <label for="admin-pass">Senha</label>
         <div class="password-field">
@@ -46,17 +46,18 @@
         <nav class="admin-tabs" aria-label="Abas do painel">
           <button class="is-active" type="button" data-admin-tab="products">Produtos</button>
           <button type="button" data-admin-tab="links">Links Gerais</button>
-          <button type="button" data-admin-tab="prices">Precos</button>
+          <button type="button" data-admin-tab="prices">Preços</button>
+          <button type="button" data-admin-tab="photos">Fotos</button>
         </nav>
 
         <section class="admin-section" data-admin-section="products">
           <div class="admin-section-heading">
             <h1>Materiais Didaticos</h1>
-            <p>Edite descricao, link de compra e preco exibido na pagina de materiais.</p>
+            <p>Edite descrição, link de compra e preço exibido na página de materiais.</p>
           </div>
           <div class="admin-table-wrap">
             <table class="admin-table">
-              <thead><tr><th>Produto</th><th>Descricao curta</th><th>Link de compra</th><th>Preco atual</th><th></th></tr></thead>
+              <thead><tr><th>Produto</th><th>Descrição curta</th><th>Link de compra</th><th>Preço atual</th><th></th></tr></thead>
               <tbody data-products-rows></tbody>
             </table>
           </div>
@@ -77,8 +78,8 @@
 
         <section class="admin-section" data-admin-section="prices" hidden>
           <div class="admin-section-heading">
-            <h1>Precos</h1>
-            <p>Controle precos originais e atuais dos produtos principais.</p>
+            <h1>Preços</h1>
+            <p>Controle preços originais e atuais dos produtos principais.</p>
           </div>
           <div class="admin-table-wrap">
             <table class="admin-table">
@@ -87,11 +88,25 @@
             </table>
           </div>
         </section>
+
+        <section class="admin-section" data-admin-section="photos" hidden>
+          <div class="admin-section-heading">
+            <h1>Fotos</h1>
+            <p>Substitua as imagens principais do site por fotos reais quando estiverem disponíveis.</p>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table admin-photos-table">
+              <thead><tr><th>Página</th><th>Identificador</th><th>Descrição</th><th>URL atual</th><th>Preview</th><th></th></tr></thead>
+              <tbody data-photos-rows></tbody>
+            </table>
+          </div>
+        </section>
       </section>
     </main>
 
     <div class="admin-toast" data-toast role="status" aria-live="polite"></div>
     <script src="admin-data.js"></script>
+    <script src="admin-photos.js"></script>
     <script src="admin.js"></script>
   </body>
 </html>

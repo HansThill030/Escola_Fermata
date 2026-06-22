@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8">
@@ -17,8 +17,11 @@
     <header class="site-header">
       <div class="container nav-shell">
         <a class="brand" href="index.html" aria-label="Escola Fermata, página inicial">
-          <span class="brand-mark" aria-hidden="true">𝄐</span>
-          <span class="brand-copy"><span class="brand-name">Fermata</span><span class="brand-subtitle">Escola de Música | Prof. Tiago Marques</span></span>
+          <img src="assets/images/logo.png" alt="Logo Escola Fermata" class="brand-logo-img" style="width: 52px; height: 52px; object-fit: contain;">
+          <span class="brand-copy">
+            <span class="brand-name">Fermata</span>
+            <span class="brand-subtitle">Escola de Música | Prof. Tiago Marques</span>
+          </span>
         </a>
         <nav class="site-nav" aria-label="Navegação principal">
           <a href="index.html">Início</a><a class="active" href="aulas.html">Aulas</a><a href="curso.html">Curso</a><a href="materiais.html">Materiais</a><a href="contato.html">Contato</a>
@@ -47,14 +50,50 @@
               <a class="btn btn-primary" href="https://wa.me/5551983178582" data-link="whatsapp" target="_blank" rel="noopener">Lista de Espera</a>
             </div>
           </div>
-          <img class="page-photo reveal" src="https://images.unsplash.com/photo-1499415479124-43c32433a620?auto=format&fit=crop&w=1000&q=82" alt="Aula de violão com acompanhamento individual">
+          <img class="page-photo reveal" data-photo="aulas-hero" src="https://images.unsplash.com/photo-1499415479124-43c32433a620?auto=format&fit=crop&w=1000&q=82" alt="Aula de violão com acompanhamento individual">
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading reveal">
+            <span class="section-kicker">Aulas</span>
+            <h2>Modalidades disponíveis</h2>
+          </div>
+          <div class="modality-grid">
+            <article class="modality-card reveal">
+              <span class="modality-icon" aria-hidden="true">📍</span>
+              <h3>Aula Presencial</h3>
+              <p>Aulas realizadas no estúdio da Escola Fermata. Ideal para quem prefere o contato direto com o professor e o instrumento.</p>
+              <div class="price"><del data-price="presencialOriginal">R$400,00</del><strong data-price="presencialCurrent">R$340,00</strong><span class="price-note">por mês</span></div>
+              <a class="btn btn-primary" href="https://wa.me/5551983178582" data-link="whatsapp" target="_blank" rel="noopener">Entrar na Lista de Espera</a>
+            </article>
+            <article class="modality-card reveal">
+              <span class="modality-icon" aria-hidden="true">💻</span>
+              <h3>Aula Online</h3>
+              <p>Aulas ao vivo por videochamada, com a mesma metodologia e atenção individual. Estude de qualquer lugar do Brasil.</p>
+              <div class="price"><del data-price="onlineOriginal">R$340,00</del><strong data-price="onlineCurrent">R$280,00</strong><span class="price-note">por mês</span></div>
+              <a class="btn btn-primary" href="https://wa.me/5551983178582" data-link="whatsapp" target="_blank" rel="noopener">Entrar na Lista de Espera</a>
+            </article>
+          </div>
+          <div class="location-panel reveal">
+            <div class="section-heading">
+              <span class="section-kicker">Localização</span>
+              <h2>Onde ficamos</h2>
+              <p>As aulas presenciais são realizadas no estúdio da Escola Fermata. Confira o endereço e planeje seu deslocamento antes de agendar um horário.</p>
+            </div>
+            <div class="map-embed">
+              <iframe src="https://www.google.com/maps?q=https%3A%2F%2Fmaps.app.goo.gl%2FE1Le4cCZ2AWenJfq8&output=embed" width="100%" height="380" style="border:0; border-radius: 8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Localização da Escola Fermata"></iframe>
+            </div>
+            <p style="margin-top: 18px;"><a href="https://maps.app.goo.gl/E1Le4cCZ2AWenJfq8" class="btn btn-outline" target="_blank" rel="noopener">📍 Ver no Google Maps</a></p>
+          </div>
         </div>
       </section>
 
       <section class="section" id="professor">
         <div class="container">
           <article class="teacher-card reveal">
-            <img src="https://images.unsplash.com/photo-1511551203524-9a24350a5771?auto=format&fit=crop&w=900&q=82" alt="Professor com violão em ambiente musical">
+            <img data-photo="aulas-professor" src="https://images.unsplash.com/photo-1511551203524-9a24350a5771?auto=format&fit=crop&w=900&q=82" alt="Professor com violão em ambiente musical">
             <div class="teacher-copy">
               <span class="section-kicker">Professor fundador</span>
               <h2>Prof. Tiago Marques Dias</h2>
@@ -101,7 +140,7 @@
 
     <footer class="site-footer">
       <div class="container footer-grid">
-        <a class="brand" href="index.html" aria-label="Escola Fermata, página inicial"><span class="brand-mark" aria-hidden="true">𝄐</span><span class="brand-copy"><span class="brand-name">Fermata</span><span class="brand-subtitle">Escola de Música | Prof. Tiago Marques</span></span></a>
+        <a class="brand" href="index.html" aria-label="Escola Fermata, página inicial"><img src="assets/images/logo.png" alt="Logo Escola Fermata" class="brand-logo-img" style="width: 52px; height: 52px; object-fit: contain;"><span class="brand-copy"><span class="brand-name">Fermata</span><span class="brand-subtitle">Escola de Música | Prof. Tiago Marques</span></span></a>
         <nav class="footer-links" aria-label="Links rápidos"><a href="index.html">Início</a><a href="curso.html">Curso</a><a href="materiais.html">Materiais</a><a href="contato.html">Contato</a></nav>
         <div class="social-links"><a href="https://www.instagram.com/tiagodeviolao/" data-link="instagram" target="_blank" rel="noopener">Instagram</a><a href="https://www.youtube.com/@tiagodeviolao" data-link="youtube" target="_blank" rel="noopener">YouTube</a><a href="mailto:tiago.intermarques@gmail.com" data-link="email">E-mail</a></div>
       </div>
@@ -110,6 +149,7 @@
     <a class="whatsapp-float" href="https://wa.me/5551983178582" data-link="whatsapp" target="_blank" rel="noopener" aria-label="Abrir WhatsApp">WA</a>
     <script async src="//www.instagram.com/embed.js"></script>
     <script src="admin-data.js"></script>
+    <script src="admin-photos.js"></script>
     <script src="assets/js/main.js"></script>
   </body>
 </html>

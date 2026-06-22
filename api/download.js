@@ -7,8 +7,8 @@ const ALLOWED_FILES = new Set([
 ]);
 
 function getSupabase() {
-  const url = process.env.https://qrapksjsffhhuszcblch.supabase.co;
-  const key = process.env.sb_secret_N-uICgOxsa2CnXD8DVvXkA_cu-_IX43;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) {
     throw new Error("Supabase não configurado nas variáveis de ambiente.");

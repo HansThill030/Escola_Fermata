@@ -45,19 +45,20 @@
       <section class="admin-shell">
         <nav class="admin-tabs" aria-label="Abas do painel">
           <button class="is-active" type="button" data-admin-tab="products">Produtos</button>
-          <button type="button" data-admin-tab="links">Links Gerais</button>
           <button type="button" data-admin-tab="prices">Preços</button>
+          <button type="button" data-admin-tab="links">Links</button>
           <button type="button" data-admin-tab="photos">Fotos</button>
+          <button type="button" data-admin-tab="buyers">Compradores</button>
         </nav>
 
         <section class="admin-section" data-admin-section="products">
           <div class="admin-section-heading">
-            <h1>Materiais Didaticos</h1>
-            <p>Edite descrição, link de compra e preço exibido na página de materiais.</p>
+            <h1>Produtos</h1>
+            <p>Edite nome, descrição e status dos materiais exibidos no site.</p>
           </div>
           <div class="admin-table-wrap">
             <table class="admin-table">
-              <thead><tr><th>Produto</th><th>Descrição curta</th><th>Link de compra</th><th>Preço atual</th><th></th></tr></thead>
+              <thead><tr><th>Nome</th><th>Descrição curta</th><th>Status</th><th></th></tr></thead>
               <tbody data-products-rows></tbody>
             </table>
           </div>
@@ -83,7 +84,7 @@
           </div>
           <div class="admin-table-wrap">
             <table class="admin-table">
-              <thead><tr><th>Produto</th><th>Preco original</th><th>Preco atual</th><th></th></tr></thead>
+              <thead><tr><th>Produto</th><th>Preço original</th><th>Preço atual</th><th></th></tr></thead>
               <tbody data-prices-rows></tbody>
             </table>
           </div>
@@ -98,6 +99,28 @@
             <table class="admin-table admin-photos-table">
               <thead><tr><th>Página</th><th>Identificador</th><th>Descrição</th><th>URL atual</th><th>Preview</th><th></th></tr></thead>
               <tbody data-photos-rows></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-section" data-admin-section="buyers" hidden>
+          <div class="admin-section-heading">
+            <h1>Compradores</h1>
+            <p>Consulte os cadastros salvos no Supabase e exporte a lista em CSV.</p>
+          </div>
+          <div class="admin-buyers-toolbar">
+            <input type="search" data-buyers-search placeholder="Buscar por nome, e-mail ou produto">
+            <select data-buyers-filter>
+              <option value="">Todos os produtos</option>
+            </select>
+            <button class="btn btn-outline" type="button" data-buyers-refresh>Atualizar</button>
+            <button class="btn btn-primary" type="button" data-buyers-export>Exportar CSV</button>
+          </div>
+          <p class="admin-error" data-buyers-message aria-live="polite"></p>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>Nome</th><th>Email</th><th>Produto</th><th>Data</th></tr></thead>
+              <tbody data-buyers-rows></tbody>
             </table>
           </div>
         </section>

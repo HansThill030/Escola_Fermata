@@ -7,6 +7,10 @@
       hotmart: "https://go.hotmart.com/Y102299117M",
       community: "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=5ac185c3e651463abb8e9b91d3245f56",
       postPurchaseGroup: "https://chat.whatsapp.com/HbzTYi3PQAmCL6zVW01rT6",
+      mercadoPagoApostila1: "https://mpago.la/2xeRRwW",
+      mercadoPagoApostila2: "https://mpago.la/2zFoJd9",
+      mercadoPagoRepertorio: "https://mpago.la/2bAmtvH",
+      mercadoPagoComunidade: "https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=5ac185c3e651463abb8e9b91d3245f56",
       instagram: "https://www.instagram.com/tiagodeviolao/",
       youtube: "https://www.youtube.com/@tiagodeviolao",
       email: "tiago.intermarques@gmail.com"
@@ -17,21 +21,24 @@
         name: "Livro de Repertório",
         description: "Seleção de músicas para prática orientada, ideal para ampliar repertório e consolidar acordes, levadas e leitura de cifras.",
         link: "https://mpago.la/2bAmtvH",
-        price: "R$19,90"
+        price: "R$19,90",
+        active: true
       },
       {
         id: "apostila1",
         name: "Apostila 1: Teoria Musical Aplicada",
         description: "Aproximadamente 100 páginas com método visual, lógica musical e campo harmônico, sem necessidade de partitura ou tablatura.",
         link: "https://mpago.la/2xeRRwW",
-        price: "R$49,90"
+        price: "R$49,90",
+        active: true
       },
       {
         id: "apostila2",
         name: "Apostila 2: Métodos de Leitura Musical",
         description: "Guia prático focado em cifras, tablaturas e iniciação à partitura para organizar a leitura no instrumento.",
         link: "https://mpago.la/2zFoJd9",
-        price: "R$69,90"
+        price: "R$69,90",
+        active: true
       }
     ],
     prices: {
@@ -102,9 +109,24 @@
     });
 
     data.products.forEach((product) => {
+      const linkKeys = {
+        apostila1: "mercadoPagoApostila1",
+        apostila2: "mercadoPagoApostila2",
+        repertorio: "mercadoPagoRepertorio",
+      };
+      const productLink = data.links[linkKeys[product.id]] || product.link;
+
       document.querySelectorAll(`a[data-product="${product.id}"]`).forEach((link) => {
-        link.href = product.link;
+        link.href = productLink;
         setExternalAttributes(link);
+      });
+
+      document.querySelectorAll(`[data-product-card="${product.id}"]`).forEach((el) => {
+        el.hidden = product.active === false;
+      });
+
+      document.querySelectorAll(`[data-product-name="${product.id}"]`).forEach((el) => {
+        el.textContent = product.name;
       });
 
       document.querySelectorAll(`[data-product-price="${product.id}"]`).forEach((el) => {

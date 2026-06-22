@@ -29,6 +29,7 @@
   const togglePass = document.querySelector("[data-toggle-pass]");
   const logout = document.querySelector("[data-logout]");
   const toast = document.querySelector("[data-toast]");
+  let buyersCache = [];
   let lockTimer;
 
   // --- Garantir estado inicial visível via display (não via hidden) ---
@@ -146,6 +147,14 @@
     return `<input type="${type || "text"}" value="${safe}" ${attrs || ""}>`;
   }
 
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
   function renderProducts(data) {
     const rows = document.querySelector("[data-products-rows]");
     if (!rows || !Array.isArray(data.products)) return;
@@ -153,10 +162,14 @@
       .map(
         (product) => `
       <tr data-product-row="${product.id}">
-        <td><strong>${product.name}</strong></td>
+        <td>${inputCell(product.name, "text", 'data-field="name"')}</td>
         <td><textarea data-field="description">${product.description || ""}</textarea></td>
-        <td>${inputCell(product.link, "url", 'data-field="link"')}</td>
-        <td>${inputCell(product.price, "text", 'data-field="price"')}</td>
+        <td>
+          <select data-field="active">
+            <option value="true" ${product.active === false ? "" : "selected"}>Ativo</option>
+            <option value="false" ${product.active === false ? "selected" : ""}>Inativo</option>
+          </select>
+        </td>
         <td><button class="btn btn-primary admin-save-row" type="button">Salvar</button></td>
       </tr>`
       )
@@ -168,8 +181,11 @@
     const labels = {
       whatsapp: "WhatsApp (CTA principal)",
       hotmart: "Hotmart (Curso Toque de Casa)",
-      community: "Comunidade (Mercado Pago)",
-      postPurchaseGroup: "Link pós-compra – Grupo WhatsApp",
+      postPurchaseGroup: "Grupo Comunidade (WhatsApp)",
+      mercadoPagoApostila1: "Mercado Pago – Apostila 1",
+      mercadoPagoApostila2: "Mercado Pago – Apostila 2",
+      mercadoPagoRepertorio: "Mercado Pago – Repertório",
+      mercadoPagoComunidade: "Mercado Pago – Comunidade",
       instagram: "Instagram",
       youtube: "YouTube",
       email: "E-mail",
@@ -244,6 +260,81 @@
       .join("");
   }
 
+  function getVisibleBuyers() {
+    const search = document.querySelector("[data-buyers-search]")?.value?.toLowerCase() || "";
+    const filter = document.querySelector("[data-buyers-filter]")?.value || "";
+    return buyersCache.filter((buyer) => {
+      const haystack = `${buyer.nome || ""} ${buyer.email || ""} ${buyer.produto || ""}`.toLowerCase();
+      return (!search || haystack.includes(search)) && (!filter || buyer.produto === filter);
+    });
+  }
+
+  function renderBuyers() {
+    const rows = document.querySelector("[data-buyers-rows]");
+    const filter = document.querySelector("[data-buyers-filter]");
+    if (!rows) return;
+
+    const products = [...new Set(buyersCache.map((buyer) => buyer.produto).filter(Boolean))].sort();
+    if (filter) {
+      const current = filter.value;
+      filter.innerHTML = '<option value="">Todos os produtos</option>' + products
+        .map((product) => `<option value="${escapeHtml(product)}">${escapeHtml(product)}</option>`)
+        .join("");
+      filter.value = current;
+    }
+
+    const buyers = getVisibleBuyers();
+    rows.innerHTML = buyers.length
+      ? buyers.map((buyer) => `
+        <tr>
+          <td>${escapeHtml(buyer.nome)}</td>
+          <td>${escapeHtml(buyer.email)}</td>
+          <td>${escapeHtml(buyer.produto)}</td>
+          <td>${buyer.data_compra ? new Date(buyer.data_compra).toLocaleString("pt-BR") : ""}</td>
+        </tr>`).join("")
+      : '<tr><td colspan="4">Nenhum comprador encontrado.</td></tr>';
+  }
+
+  async function loadBuyers() {
+    const message = document.querySelector("[data-buyers-message]");
+    if (message) message.textContent = "Carregando compradores...";
+    try {
+      const token = localStorage.getItem("fermata_admin_api_token") || "";
+      const response = await fetch("/api/customer", {
+        headers: token ? { "x-admin-token": token } : {},
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Não foi possível carregar compradores.");
+      buyersCache = payload.customers || [];
+      if (message) message.textContent = "";
+      renderBuyers();
+    } catch (error) {
+      if (message) message.textContent = `${error.message} Se a API exigir token, salve-o no localStorage como fermata_admin_api_token.`;
+      buyersCache = [];
+      renderBuyers();
+    }
+  }
+
+  function exportBuyersCsv() {
+    const header = ["Nome", "Email", "Produto", "Data"];
+    const lines = getVisibleBuyers().map((buyer) => [
+      buyer.nome,
+      buyer.email,
+      buyer.produto,
+      buyer.data_compra,
+    ]);
+    const csv = [header, ...lines]
+      .map((line) => line.map((value) => `"${String(value || "").replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "compradores-fermata.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   function renderPanel() {
     const data = readData();
     renderProducts(data);
@@ -263,6 +354,7 @@
         section.style.display =
           section.dataset.adminSection === tab.dataset.adminTab ? "block" : "none";
       });
+      if (tab.dataset.adminTab === "buyers") loadBuyers();
     }
 
     const rowButton = event.target.closest(".admin-save-row");
@@ -280,8 +372,8 @@
         if (product) {
           product.description =
             productRow.querySelector('[data-field="description"]')?.value || "";
-          product.link = productRow.querySelector('[data-field="link"]')?.value || "";
-          product.price = productRow.querySelector('[data-field="price"]')?.value || "";
+          product.name = productRow.querySelector('[data-field="name"]')?.value || product.name;
+          product.active = productRow.querySelector('[data-field="active"]')?.value !== "false";
         }
       }
 
@@ -309,7 +401,13 @@
       writeData(data);
       showToast("✓ Salvo com sucesso!");
     }
+
+    if (event.target.closest("[data-buyers-refresh]")) loadBuyers();
+    if (event.target.closest("[data-buyers-export]")) exportBuyersCsv();
   });
+
+  document.querySelector("[data-buyers-search]")?.addEventListener("input", renderBuyers);
+  document.querySelector("[data-buyers-filter]")?.addEventListener("change", renderBuyers);
 
   togglePass?.addEventListener("click", () => {
     const isPassword = passInput.type === "password";
